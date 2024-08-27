@@ -1,0 +1,13 @@
+[package]
+name = "leptos_extension"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+gloo-console = "0.3.0"
+leptos = { version = "0.7.0-beta2", features = ["csr", "nightly"] }
+wasm-bindgen = "0.2.93"
+wasm-bindgen-futures = "0.4.43"

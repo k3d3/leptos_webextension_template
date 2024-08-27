@@ -1,0 +1,5 @@
+[alias]
+wextrunk = "run --release --manifest-path ./wextrunk/Cargo.toml --"
+
+[build]
+rustflags = ["-Z", "threads=25"]

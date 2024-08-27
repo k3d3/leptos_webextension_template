@@ -1,0 +1,7 @@
+[package]
+name = "wextrunk"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lol_html = "1.2.1"

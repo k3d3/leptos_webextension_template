@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title data-wextrunk-include="WEXTRUNK_POPUP">Popup</title>
+    <title data-wextrunk-include="WEXTRUNK_OPTIONS">Options</title>
+    <meta
+      data-wextrunk-include="WEXTRUNK_POPUP"
+      data-wextrunk-include="WEXTRUNK_OPTIONS"
+      name="description"
+      content="Popup or Options"
+    />
+
+    <link data-trunk rel="rust" data-wasm-no-import data-bindgen-target="web" />
+    <link data-trunk rel="tailwind-css" href="/tailwind.css" />
+    <link
+      data-wextrunk
+      rel="htmlpage"
+      name="WEXTRUNK_POPUP"
+      html="popup.html"
+      wasm-fn="popup_page"
+    />
+    <link
+      data-wextrunk
+      rel="htmlpage"
+      name="WEXTRUNK_OPTIONS"
+      html="options.html"
+      wasm-fn="options_page"
+    />
+    <link
+      data-wextrunk
+      rel="script"
+      no-reload
+      background-script
+      js="background.js"
+      wasm-fn="background_script"
+    />
+
+    <link
+      data-wextrunk
+      rel="manifest"
+      target="firefox"
+      href="manifest-firefox.json"
+    />
+    <link
+      data-wextrunk
+      rel="manifest"
+      default
+      target="chrome"
+      href="manifest-chrome.json"
+    />
+  </head>
+  <body></body>
+</html>
