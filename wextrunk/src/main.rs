@@ -264,6 +264,15 @@ struct ScriptTemplate {
 }
 
 impl ScriptTemplate {
+    fn find_dispatch_event(script_contents: &str, start_offset: usize) -> Option<(usize, usize)> {
+        let dispatch_event_start =
+            script_contents[start_offset..].find("\ndispatchEvent")? + start_offset + 1;
+        let dispatch_event_end =
+            script_contents[dispatch_event_start..].find(";\n")? + dispatch_event_start + 1;
+
+        Some((dispatch_event_start, dispatch_event_end))
+    }
+
     fn new(script_contents: &str) -> Self {
         let import_start = script_contents
             .find("import")
@@ -273,20 +282,23 @@ impl ScriptTemplate {
             .expect("Should find end of import line in Trunk script output")
             + import_start
             + 1;
-        let dispatch_event_start = script_contents[import_end..]
-            .find("\ndispatchEvent")
-            .expect("Should find dispatchEvent in Trunk script output")
-            + import_end
-            + 1;
-        let dispatch_event_end = script_contents[dispatch_event_start..]
-            .find(";\n")
-            .expect("Should find end of dispatchEvent in Trunk script output")
-            + dispatch_event_start
-            + 1;
+        let (dispatch_event_start, dispatch_event_end) =
+            match Self::find_dispatch_event(&script_contents, import_end) {
+                Some((start, end)) => (start, end),
+                None => {
+                    let init_end = script_contents[import_end..]
+                        .find(".wasm');\n")
+                        .expect("Should find end of init line in Trunk script output")
+                        + import_end
+                        + 1;
+
+                    (init_end, init_end)
+                }
+            };
 
         let import_line = format!("{}\n", &script_contents[import_start..import_end]);
-        let pre_init = fix_init_line(script_contents[import_end..dispatch_event_start].trim());
         let dispatch_event = script_contents[dispatch_event_start..dispatch_event_end].to_string();
+        let pre_init = fix_init_line(script_contents[import_end..dispatch_event_start].trim());
         let auto_reload_contents = script_contents[dispatch_event_end..].to_string();
         let auto_reload = if auto_reload_contents.contains("function") {
             Some(AutoReloadTemplate::new(&auto_reload_contents))
