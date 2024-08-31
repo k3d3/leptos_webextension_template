@@ -28,12 +28,14 @@
           ];
       in {
         devShells.default = pkgs.mkShell {
-          name = "rust-wasm-environment";
+          name = "leptos";
 
           packages = with pkgs; [
             f
             wasm-pack
             trunk
+            leptosfmt
+            symbolicator
           ];
         };
       }

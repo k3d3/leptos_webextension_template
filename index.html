@@ -10,7 +10,16 @@
       content="Popup or Options"
     />
 
-    <link data-trunk rel="rust" data-wasm-no-import data-bindgen-target="web" />
+    <link
+      data-trunk
+      rel="rust"
+      data-wasm-no-import
+      data-bindgen-target="web"
+      data-keep-debug="true"
+      data-wasm-opt="3"
+      data-reference-types
+      data-weak-refs
+    />
     <link data-trunk rel="tailwind-css" href="/tailwind.css" />
     <link
       data-wextrunk

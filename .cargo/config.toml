@@ -1,5 +1,6 @@
 [alias]
 wextrunk = "run --release --manifest-path ./packages/wextrunk/Cargo.toml --"
+wextsplit = "run --release --manifest-path ./packages/wextsplit/Cargo.toml --"
 
 [build]
 rustflags = ["-Z", "threads=25"]

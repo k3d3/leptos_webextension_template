@@ -1,4 +1,12 @@
 [[hooks]]
 stage = "post_build"
 command = "cargo"
+command_arguments = ["wextsplit"]
+
+[[hooks]]
+stage = "post_build"
+command = "cargo"
 command_arguments = ["wextrunk"]
+
+[serve]
+headers = { "Access-Control-Allow-Origin" = "*" }

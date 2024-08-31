@@ -16,6 +16,7 @@ This is achieved by the included `wextrunk` script, which is a post-build hook f
 - TailwindCSS for styling (though it's not required)
 - Hot Reloading in popup and options pages
 - Nix flake with nightly Rust
+- Debugging with the [Chrome DWARF extension](https://goo.gle/wasm-debugging-extension)
 
 ## Prerequisites
 
@@ -39,6 +40,8 @@ WEXTRUNK_TARGET=firefox trunk serve
 ```
 
 This will output a debug build of the extension to the `dist` directory, as well as run a Trunk dev server at `localhost:8080` that will reload the extension page when changes are made.
+
+Additionally, you should be able to use the VSCode debugger to debug your webextension.
 
 To change the details of the Trunk dev server, you'll need to use environment variables:
 
@@ -72,6 +75,15 @@ The `wextrunk` script will pick up on tags containing `data-wextrunk`, which can
 These are also used to select the correct manifest file.
 
 In order to restrict tags to only specific pages, you can use the `data-wextrunk-include` attribute. Note that since `wextrunk` is a post-build hook, it will only filter post-build tags. Luckily, Trunk forwards `data-wextrunk-include` on most tags, so the inout should match the output.
+
+## Debugging
+
+This template includes a `launch.json` file for debugging in VSCode. This file is set up to use the Chrome DWARF extension, which allows for debugging Rust code in the browser.
+
+To use this, you should be able to go to the debug tab and click "Debug (Chrome)". Once you run this, you should see the
+original Rust code in the browser dev console.
+
+The "Debug (Firefox)" configuration is YMMV.
 
 ## Loading the extension into a browser
 
@@ -117,6 +129,25 @@ with top-level async calls, `wextrunk` will wrap the script in an async IIFE.
 Finally, `wextrunk` will copy the `manifest.json` file for the selected target to the `dist` directory. No
 special processing happens here; it just copies from whatever's specified in the manifest tag's `href` attribute.
 
+## How `wextsplit` works
+
+`wextsplit` is set up similarly to `wextrunk`, such that it's using another `xtask` package. This package is
+used to enable Rust debugging in Chrome.
+
+By default, if wasm-bindgen is told to output debug symbols, it will output one wasm file containing both the
+symbols and the code. This would normally work for a regular web application because the Chrome DWARF extension
+can easily access it via HTTP. However, since we're building a WebExtension, the extension tries to access the wasm
+file via the `chrome-extension://` protocol, which won't work.
+
+To get around this, we can split the wasm file into two: one containing the symbols and one containing the code.
+Then, we can add an entry in the wasm file to tell the DWARF extension that it can grab the symbols over HTTP.
+
+More specifically, `wextsplit` calls symbolicator's `wasm-split` command to do exactly this. It then piggybacks
+on the `trunk serve` command to serve the symbols over HTTP.
+
+In the end, this means debugging should Just Work™. (Of course there are a billion ways this could fail, but so far
+I haven't had too many issues with it.)
+
 ## License
 
 This template is released to the public domain.
@@ -128,3 +159,6 @@ Where that is not possible, it is licenced under:
 - CC0 1.0 Universal (LICENSE-CC0 or https://creativecommons.org/publicdomain/zero/1.0/)
 
 at your option.
+
+If you plan to use this template in your own project and don't want to release it to the public domain or under
+these licenses, don't forget to remove these files and this blurb.

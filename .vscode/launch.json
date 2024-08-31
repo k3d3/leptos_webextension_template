@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug (Chrome)",
+      "type": "chrome",
+      "request": "launch",
+      "url": "chrome://extensions",
+      "webRoot": "${workspaceFolder}/dist",
+      "userDataDir": false,
+      "runtimeArgs": ["--load-extension=${workspaceFolder}/dist"],
+      "preLaunchTask": "trunk: serve",
+      "postDebugTask": "postdebugKill"
+    },
+    {
+      "name": "Debug (Firefox)",
+      "type": "firefox",
+      "request": "launch",
+      "url": "about:debugging",
+      "webRoot": "${workspaceFolder}/dist",
+      "addonPath": "${workspaceFolder}/dist",
+      "reAttach": true,
+      "preLaunchTask": "trunk: serve",
+      "postDebugTask": "postdebugKill"
+    }
+  ]
+}
